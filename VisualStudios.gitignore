@@ -396,6 +396,3 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-
-# Other Ignore Files
-.vs/CSE412-Final-Database/v16/Server/sqlite3/db.lock
