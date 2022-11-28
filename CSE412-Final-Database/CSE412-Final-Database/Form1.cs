@@ -7,18 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using Npgsql;
 
 namespace CSE412_Final_Database
 {
     public partial class Form1 : Form
     {
+        List<int> chartList1 = new List<int>();
+        List<int> chartList2 = new List<int>();
+        Series series1 = new Series();
+
         public Form1()
         {
             InitializeComponent();
             this.Text = "Final Database Project";
-
-            // ShowGameTable();
         }
 
         private void ShowEarnsTable(object sender, EventArgs e)
@@ -171,6 +174,9 @@ namespace CSE412_Final_Database
             }
             comm.Dispose();
             conn.Close();
+
+            // Put all the data from the datagridview into the chart
+            FillChart("Games Rated E", 50);
         }
 
         private void GraphQuery2(object sender, EventArgs e)
@@ -190,6 +196,9 @@ namespace CSE412_Final_Database
             }
             comm.Dispose();
             conn.Close();
+
+            // Put all the data from the datagridview into the chart
+            FillChart("Action Games", 25);
         }
 
         private void GraphQuery3(object sender, EventArgs e)
@@ -209,6 +218,9 @@ namespace CSE412_Final_Database
             }
             comm.Dispose();
             conn.Close();
+
+            // Put all the data from the datagridview into the chart
+            FillChart("Nintendo Games", 5);
         }
 
         private void GraphQuery4(object sender, EventArgs e)
@@ -228,6 +240,9 @@ namespace CSE412_Final_Database
             }
             comm.Dispose();
             conn.Close();
+
+            // Put all the data from the datagridview into the chart
+            FillChart("Games Scoring At Least 75", 50);
         }
 
         private void GraphQuery5(object sender, EventArgs e)
@@ -247,6 +262,48 @@ namespace CSE412_Final_Database
             }
             comm.Dispose();
             conn.Close();
+
+            // Put all the data from the datagridview into the chart
+            FillChart("Games Sold", 5);
+        }
+
+        private void PutDataInChart()
+        {
+            chartList1.Clear();
+            chartList2.Clear();
+
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                int va = Convert.ToInt32(dataGridView1.Rows[i].Cells[0].Value);
+                int va2 = Convert.ToInt32(dataGridView1.Rows[i].Cells[1].Value);
+                chartList1.Add(va);
+                chartList2.Add(va2);
+            }
+        }
+
+        private void FillChart(string seriesName, int yInterval)
+        {
+            // Put all the data from the datagridview into the chart
+            foreach (var series in chart1.Series)
+            {
+                series.Points.Clear();
+            }
+            chart1.Series.Clear();
+            PutDataInChart();
+
+            var objChart1 = chart1.ChartAreas[0];
+            objChart1.AxisX.MajorGrid.Interval = 1;
+            objChart1.AxisY.MajorGrid.Interval = yInterval;
+
+            series1.ChartType = SeriesChartType.Line;
+            series1.Name = seriesName;
+            chart1.Series.Add(series1);
+            chart1.Series[0].ChartArea = "ChartArea1";
+
+            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+            {
+                chart1.Series[seriesName].Points.AddXY(chartList2[i], chartList1[i]);
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
